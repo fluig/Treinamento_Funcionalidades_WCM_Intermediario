@@ -19,9 +19,4 @@
         <role-name>admin</role-name>
         <principal-name>wcmadmin</principal-name>
     </security-role>   
-    
-        
-     <valve>
-        <class-name>com.totvs.technology.auth.saml.TOTVSAuthenticatorValve</class-name>
-    </valve>
 </jboss-web>

@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.io.InputStream;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -28,9 +29,9 @@ import com.fluig.sdk.api.customappkey.KeyVO;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.fluig.sdk.api.social.PostVO;
 import com.fluig.sdk.api.FluigAPI;
 import com.fluig.sdk.api.common.SDKException;
-import com.fluig.sdk.api.social.PostVO;
 import com.fluig.sdk.service.PostService;
 import com.fluig.sdk.service.UserService;
 import com.fluig.sdk.user.UserVO;
@@ -71,10 +72,10 @@ public class FeedbackRest extends FluigRest {
         String feedback = (String) obj.get("feedback");
         
         // Definir atividade destino
-        String atividadeDestino = "2";
+        String atividadeDestino = "5";
 
         // Definir usuário destino
-        String usuarioDestino = "treinamento.aluno";
+        String usuarioDestino = "luis.rossi";
 
         // Comentario que será inserido no processo ao iniciar a solicitação
         String comentarios = "Iniciado via pagina portal";
@@ -87,58 +88,59 @@ public class FeedbackRest extends FluigRest {
         String cod_processo = "portal_avaliar_feedback";
         
     	
-        try {
-        	
-            KeyVO key = Keyring.getKeys(empresa, RestConstant.APP_KEY);
-        	OAuthConsumer config = config(key);	
-        	
-            URL url = new URL( new FluigAPI().getPageService().getServerURL() +"/process-management/api/v2/processes/"+cod_processo+"/start");
-            
-            
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(RestConstant.REQUEST_METHOD_POST);
-            conn.setRequestProperty("Accept-Charset", "UTF-8");
-            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            config.sign(conn);
-            
+        KeyVO key = Keyring.getKeys(empresa, RestConstant.APP_KEY);
+    	OAuthConsumer config = config(key);	
+    	
+        URL url = new URL( new FluigAPI().getPageService().getServerURL() +"/process-management/api/v2/processes/"+cod_processo+"/start");
+        
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        
+        conn.setRequestMethod(RestConstant.REQUEST_METHOD_POST);
+        conn.setRequestProperty("Accept-Charset", "UTF-8");
+        conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+        config.sign(conn);
+        
 
-            String json = 
-            "{"
-       		+ "\"targetState\": "+atividadeDestino+","
-       		+ "\"targetAssignee\": \""+usuarioDestino+"\","
-       		+ "\"comment\": \""+comentarios+"\","
-       		+ "\"formFields\": "
-        		+ "{  "
-        			+ "\"txt_nome\": \""+nome+"\",  "
-        			+ "\"txt_email\": \""+email+"\",  "
-        			+ "\"txt_feedback\": \""+feedback+"\"  "
-        		+ "}"
-           + "}";
-
-            
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(json);
-            wr.flush();
-            wr.close();
-            conn.connect();
-
-            Reader inputCreateUser = new BufferedReader(new InputStreamReader(conn.getInputStream(), RestConstant.UTF_8_ENCODE));
-            String result = "";
-            for (int c = inputCreateUser.read(); c != -1; c = inputCreateUser.read()) {
-            	result += (char) c;
-            }
-            int code = conn.getResponseCode();
-            
-            conn.disconnect();
-            
-        	return super.buildSuccessResponse(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return super.buildErrorResponse(e);
+        String json = 
+        "{"
+   		+ "\"targetState\": "+atividadeDestino+","
+   		+ "\"targetAssignee\": \""+usuarioDestino+"\","
+   		+ "\"comment\": \""+comentarios+"\","
+   		+ "\"formFields\": "
+    		+ "{  "
+    			+ "\"txt_nome_solic\": \""+nome+"\",  "
+    			+ "\"txt_email_solic\": \""+email+"\",  "
+    			+ "\"txt_feedback\": \""+feedback+"\"  "
+    		+ "}"
+       + "}";
+        
+        
+        System.out.println("Debug*****");
+        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+        wr.write(json);
+        wr.flush();
+        wr.close();
+        conn.connect();
+        
+        InputStream _is;
+        if (conn.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
+            _is = conn.getInputStream();
+        } else {
+            _is = conn.getErrorStream();
         }
         
+        Reader inputCreateUser = new BufferedReader(new InputStreamReader(_is, RestConstant.UTF_8_ENCODE));
+
+        String result = "";
+        for (int c = inputCreateUser.read(); c != -1; c = inputCreateUser.read()) {
+        	result += (char) c;
+        }
+        int code = conn.getResponseCode();
+        conn.disconnect();
+        
+    	return super.buildSuccessResponse(result);
     }
     
     private OAuthConsumer config(KeyVO key) {

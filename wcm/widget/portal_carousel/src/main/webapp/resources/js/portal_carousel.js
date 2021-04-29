@@ -5,7 +5,7 @@ var portalCarousel = SuperWidget.extend({
 
     //método iniciado quando a widget é carregada
     init: function() {
-    	this.iniciarCarrousel();
+    	this.iniciarCarousel();
     },
   
     //BIND de eventos
@@ -16,25 +16,25 @@ var portalCarousel = SuperWidget.extend({
         global: {}
     },
  
-    iniciarCarrousel: function() {
+    iniciarCarousel: function(){
     	var images = [
               {
                   src: '/portal_carousel/resources/images/img1.jpg',
-                  alt: '${i18n.getTranslation("carrousel.img1.title")}',
-                  title: '${i18n.getTranslation("carrousel.img1.title")}',
-                  description: '${i18n.getTranslation("carrousel.img1.descr")}',
+                  alt: 'Imagem 1',
+                  title: 'Imagem 1',
+                  description: 'Descrição da imagem 1',
                   linktarget: '_blank',
                   linkhref: 'http://www.fluig.com',
                   linktext: 'fluig'
               },
               {
                   src: '/portal_carousel/resources/images/img2.jpg',
-                  alt: '${i18n.getTranslation("carrousel.img2.title")}',
-                  title: '${i18n.getTranslation("carrousel.img2.title")}',
-                  description: '${i18n.getTranslation("carrousel.img2.descr")}',
+                  alt: 'Imagem 2',
+                  title: 'Imagem 2',
+                  description: 'Descrição da imagem 2',
                   linktarget: '_blank',
-                  linkhref: 'http://style.fluig.com',
-                  linktext: 'Style Guide'
+                  linkhref: 'http://www.fluig.com',
+                  linktext: 'fluig'
               }
           ];
            
@@ -44,8 +44,8 @@ var portalCarousel = SuperWidget.extend({
               indicators: true,
               startIndex: 0,
               interval: 5000,
-              autoSize:true,
-              resize:true
+              resize: true,
+              autoSize: true
           };
            
           var carousel = FLUIGC.carousel('#carousel-example-generic_'+this.instanceId, settings);

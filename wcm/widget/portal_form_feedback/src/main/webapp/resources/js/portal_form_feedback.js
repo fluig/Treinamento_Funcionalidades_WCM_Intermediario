@@ -15,46 +15,42 @@ var portalFormFeedback = SuperWidget.extend({
         global: {}
     },
  
-    initProcessFeedback: function () {
-        var nome = $("#txt_nome_"+this.instanceId).val();
-        var email = $("#txt_email_"+this.instanceId).val();
-        var feedback = $("#txt_feedback_"+this.instanceId).val();
+    initProcessFeedback: function() {
+    	var nome = $("#txt_nome_"+this.instanceId).val();
+    	var email = $("#txt_email_"+this.instanceId).val();
+    	var feedback = $("#txt_feedback_"+this.instanceId).val();
+    	var url = WCMAPI.getServerURL() + '/portal_form_feedback/api/rest/feedback/enviar';
+    	
+    	var data = {
+			"nome": nome,
+			"email": email,
+			"feedback": feedback,
+			"empresa": 1
+		}
+    	
+    	WCMAPI.Read({
+    	    type: "POST",
+    	    url: url,
+    	    async: true,
+    	    data: JSON.stringify(data),
+    	    success: function funcao(data) {
+    	        console.log(data);
+    	        FLUIGC.toast({
+    	        	title:"",
+    	        	message:"Feedback enviado!",
+    	        	type:"success"
+    	        });
+    	    },
+    	    error: function (jqXHR, exception) {
+    	    	var erro = jqXHR.responseText.replace("{","").replace("}","");
 
-        var url = WCMAPI.getServerURL() + '/portal_form_feedback/api/rest/feedback/enviar';
-        var data = {
-        		'nome': nome,
-        		'email': email,
-        		'feedback': feedback
-        };
-
-        WCMAPI.Read({
-            type: "POST",
-            url: url,
-            async: true,
-            data: JSON.stringify(data),
-            success: function funcao(data) {
-                console.log(data);
-
-                FLUIGC.toast({
-                	title: '${i18n.getTranslation("btn.enviar.success.title")}',
-                	message: '${i18n.getTranslation("btn.enviar.success.descr")}',
-                	type:"success"
-                });
-            },
-            
-            error: function (requestObject, error, errorThrown) {
-                console.log(requestObject);
-                console.log(error);
-                console.log(errorThrown);
-                
-                FLUIGC.toast({
-                	title: '${i18n.getTranslation("btn.enviar.erro.title")}',
-                	message: '${i18n.getTranslation("btn.enviar.erro.descr")}',
-                	type:"danger"
-                });
-            }
-        });
+    	        FLUIGC.toast({
+    	        	title:"",
+    	        	message: erro,
+    	        	type:"danger"
+    	        });
+    	    }
+    	});    	
     }
-
 });
 

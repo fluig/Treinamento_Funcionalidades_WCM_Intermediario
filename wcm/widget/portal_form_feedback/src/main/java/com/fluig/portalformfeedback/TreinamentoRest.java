@@ -35,16 +35,24 @@ import com.fluig.sdk.service.PostService;
 import com.fluig.sdk.service.UserService;
 import com.fluig.sdk.user.UserVO;
 import com.fluig.sdk.web.FluigRest;
+import com.fluig.sdk.service.SecurityService;
 
 // http://<URL_FLUIG>:<PORTA_FLUIG>/portal_form_feedback/api/rest/treinamento/primeiraAPI
 
 @Path("/treinamento")
 public class TreinamentoRest extends FluigRest {
- 
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/primeiraAPI")
     public Response primeiraAPI() {
-    	return super.buildSuccessResponse("API Desenvolvida no treinamento");
+        // https://api.fluig.com/old/sdk/com/fluig/sdk/api/FluigAPI.html
+        
+        try{
+            Long empresa = new FluigAPI().getSecurityService().getCurrentTenantId();
+            return super.buildSuccessResponse("empresa: " + empresa);
+        } catch (SDKException e) {
+            return super.buildSuccessResponse("Erro: " + e);
+        }
     }
 }
