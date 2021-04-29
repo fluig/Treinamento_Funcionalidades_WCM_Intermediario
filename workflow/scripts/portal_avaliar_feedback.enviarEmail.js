@@ -6,7 +6,7 @@ function enviarEmail() {
    try{
        var empresa = fluigAPI.getSecurityService().getCurrentTenantId();
        var server = fluigAPI.getPageService().getServerURL();
-       var usuario = hAPI.getCardValue("txt_nome_solic");
+       var usuario = hAPI.getCardValue("txt_nome");
        var num_solic = getValue("WKNumProces");
        var template = "TPL_WF_FEEDBACK_PORTAL";    
        var remetente = "luis.rossi";
@@ -20,7 +20,7 @@ function enviarEmail() {
        parametros.put("CODIGO_EMPRESA", empresa);
 
        var destinatarios = new java.util.ArrayList();
-       destinatarios.add(hAPI.getCardValue("txt_email_solic"));	    
+       destinatarios.add(hAPI.getCardValue("txt_email"));	    
        
        notifier.notify(remetente, template, parametros, destinatarios, "text/html");
     } catch(e){
