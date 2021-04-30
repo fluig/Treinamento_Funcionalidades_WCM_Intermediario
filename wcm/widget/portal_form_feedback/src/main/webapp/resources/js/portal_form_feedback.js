@@ -41,7 +41,7 @@ var portalFormFeedback = SuperWidget.extend({
     	        	type:"success"
     	        });
     	    },
-    	    error: function (jqXHR, exception) {
+    	    error: function (jqXHR) {
     	    	var erro = jqXHR.responseText.replace("{","").replace("}","");
 
     	        FLUIGC.toast({
