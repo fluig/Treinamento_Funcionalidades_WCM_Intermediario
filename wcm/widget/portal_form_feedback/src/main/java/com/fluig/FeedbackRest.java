@@ -120,15 +120,12 @@ public class FeedbackRest extends FluigRest {
             wr.close();
             conn.connect();
             
-            InputStream _is;
-            String status = "";
-            
+            InputStream _is;    
+                    
             if (conn.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
                 _is = conn.getInputStream();
-                status = "Sucesso";
             } else {
                 _is = conn.getErrorStream();
-                status = "Erro";
             }
             
             Reader inputCreateUser = new BufferedReader(new InputStreamReader(_is, RestConstant.UTF_8_ENCODE));
